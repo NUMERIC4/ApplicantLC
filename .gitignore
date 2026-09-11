@@ -1,0 +1,43 @@
+# Environment and Secret keys (CRITICAL - NEVER COMMIT TO GITHUB)
+.env
+.env.local
+.env.*.local
+*.env
+
+# SQLite Database
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+applicant_lc.db
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+
+# Testing & Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & Temp
+*.log
+scratch/
+data/applicant_files/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

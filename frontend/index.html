@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApplicantLC — Applicant Learning Curve & AI Pipeline</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-theme">
+  <!-- Top App Navigation -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">Applicant<span class="accent-gradient">LC</span></span>
+          <span class="logo-tag">Learning Curve Engine</span>
+        </div>
+      </div>
+
+      <div class="ai-status-pill" id="aiStatusPill" title="NVIDIA Open Models Engine">
+        <span class="ai-dot active"></span>
+        <span class="ai-model-label" id="headerModelLabel">NVIDIA NIM: meta/llama-3.3-70b-instruct</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="candidate-badge" id="headerCandidateBadge">
+        <span class="cand-avatar">AS</span>
+        <div class="cand-info">
+          <span class="cand-name" id="headerCandName">Alex Schmidt</span>
+          <span class="cand-sub" id="headerCandTarget">TU Berlin • Software & AI Intern</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline" id="btnOpenFitEvaluator">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        AI Fit Scorer
+      </button>
+      <button class="btn btn-primary" id="btnNewApplication">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        + Application
+      </button>
+      <button class="btn btn-accent" id="btnLogFeedback">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Log Feedback
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-main">
+    <!-- Top Sprint & KPI Strip -->
+    <section class="kpi-section">
+      <!-- Daily Batch Sprint Card -->
+      <div class="sprint-card" id="sprintCard">
+        <div class="sprint-header">
+          <div class="sprint-title-wrap">
+            <span class="badge-sprint" id="sprintDayBadge">DAY 4</span>
+            <h3 class="sprint-focus" id="sprintFocus">Autonomous Systems & Robotics</h3>
+          </div>
+          <span class="sprint-status-tag" id="sprintStatusTag">In Progress</span>
+        </div>
+
+        <div class="sprint-metrics">
+          <div class="sprint-metric-bar">
+            <div class="bar-label-row">
+              <span>Applications Submitted</span>
+              <strong id="sprintAppCount">2 / 3 Target</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill fill-cyan" id="sprintAppProgress" style="width: 66%;"></div>
+            </div>
+          </div>
+
+          <div class="sprint-metric-bar">
+            <div class="bar-label-row">
+              <span>Companies Evaluated</span>
+              <strong id="sprintEvalCount">4 / 6 Target</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill fill-emerald" id="sprintEvalProgress" style="width: 66%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sprint-footer">
+          <span class="sprint-next-pool" id="sprintNextPool">Next Pool: Berlin AI Startups</span>
+          <button class="btn-text-sm" id="btnAdvanceSprint">Edit Sprint Goals</button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon icon-cyan">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-val" id="kpiCompaniesPool">4</span>
+            <span class="kpi-lbl">Target Companies</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-indigo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-val" id="kpiTotalApps">2</span>
+            <span class="kpi-lbl">Total Applications</span>
+          </div>
+        </div>
+
+        <div class="kpi-card" id="cardFollowUps">
+          <div class="kpi-icon icon-amber">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-val" id="kpiFollowUps">0</span>
+            <span class="kpi-lbl">Follow-ups Due</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-purple">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-val" id="kpiFeedbacks">1</span>
+            <span class="kpi-lbl">Feedbacks Analyzed</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-emerald">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-val" id="kpiInterviews">1</span>
+            <span class="kpi-lbl">Interviews Scheduled</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" id="appTabs">
+      <button class="nav-tab active" data-tab="tab-dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        Today's Sprint & Batch
+      </button>
+      <button class="nav-tab" data-tab="tab-pipeline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Application Pipeline (Kanban)
+      </button>
+      <button class="nav-tab" data-tab="tab-companies">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+        Companies Pool & Fit Grading
+      </button>
+      <button class="nav-tab" data-tab="tab-learning">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Learning Curve & Skill Gaps
+      </button>
+      <button class="nav-tab" data-tab="tab-documents">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Documents & Relational Links
+      </button>
+      <button class="nav-tab" data-tab="tab-alerts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        Search Alerts
+      </button>
+      <button class="nav-tab" data-tab="tab-settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        NVIDIA AI & Settings
+      </button>
+    </nav>
+
+    <!-- Tab 1: Dashboard & Today's Batch -->
+    <div class="tab-pane active" id="tab-dashboard">
+      <div class="pane-grid-2col">
+        <!-- Today's Company Evaluation Table -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Today's Batch Companies Evaluation</h2>
+              <p class="card-subtitle">Prioritized company targets mapped by profile fit & recommended effort</p>
+            </div>
+            <button class="btn btn-sm btn-outline" id="btnQuickAddCompany">+ Add Company</button>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="todayCompaniesTable">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Class</th>
+                  <th>Effort</th>
+                  <th>Field</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="todayCompaniesTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Learning Forecast & Stage Conversion -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Educated Learning Curve Forecast</h2>
+              <p class="card-subtitle">AI-driven predictive analysis based on feedback iteration cycles</p>
+            </div>
+            <span class="badge badge-accent">NVIDIA Model Forecast</span>
+          </div>
+
+          <div class="forecast-box" id="forecastBox">
+            <div class="forecast-icon">💡</div>
+            <p class="forecast-text" id="forecastText">
+              Evaluating your current candidate fit: Applications in Class A & B firms have a 33% higher interview conversion rate. Closing active gaps is forecasted to increase recruiter screening pass-through from 40% to 68%.
+            </p>
+          </div>
+
+          <h4 class="subheading mt-3">Pipeline Funnel Distribution</h4>
+          <div class="funnel-container" id="funnelContainer">
+            <div class="funnel-stage">
+              <span class="stage-name">Preparing</span>
+              <span class="stage-bar" id="funnelPreparing" style="width: 30%;"></span>
+              <span class="stage-num" id="funnelNumPreparing">1</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="stage-name">Applied</span>
+              <span class="stage-bar" id="funnelApplied" style="width: 50%;"></span>
+              <span class="stage-num" id="funnelNumApplied">2</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="stage-name">Interview</span>
+              <span class="stage-bar" id="funnelInterview" style="width: 40%;"></span>
+              <span class="stage-num" id="funnelNumInterview">1</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="stage-name">Feedback Recv</span>
+              <span class="stage-bar" id="funnelFeedback" style="width: 25%;"></span>
+              <span class="stage-num" id="funnelNumFeedback">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Application Pipeline (Kanban) -->
+    <div class="tab-pane" id="tab-pipeline">
+      <div class="kanban-header-bar">
+        <div>
+          <h2 class="pane-title">Application Lifecycle Board</h2>
+          <p class="pane-sub">Track stages from portal submission to recruiter review, technical interviews, and feedback loop</p>
+        </div>
+        <div class="kanban-filters">
+          <select id="filterKanbanChannel" class="select-sm">
+            <option value="">All Channels</option>
+            <option value="Direct">Direct Career Page</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="StepStone">StepStone</option>
+          </select>
+          <button class="btn btn-sm btn-outline" id="btnImportJobUrl">Import Job URL</button>
+          <button class="btn btn-sm btn-primary" id="btnNewApplicationFromKanban">+ Add Application</button>
+        </div>
+      </div>
+
+      <div class="kanban-board" id="kanbanBoard">
+        <!-- Columns: Preparing, Applied/Submitted, Recruiter Review, Functional Review, Interview, Offer, Rejected -->
+        <div class="kanban-col" data-stage="Preparing">
+          <div class="kanban-col-head">
+            <span class="col-title">Preparing / Ready</span>
+            <span class="col-count" id="count-Preparing">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Preparing"></div>
+        </div>
+
+        <div class="kanban-col" data-stage="Portal submitted">
+          <div class="kanban-col-head">
+            <span class="col-title">Submitted</span>
+            <span class="col-count" id="count-Submitted">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Submitted"></div>
+        </div>
+
+        <div class="kanban-col" data-stage="Recruiter review">
+          <div class="kanban-col-head">
+            <span class="col-title">Recruiter Review</span>
+            <span class="col-count" id="count-Recruiter">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Recruiter"></div>
+        </div>
+
+        <div class="kanban-col" data-stage="functional department review">
+          <div class="kanban-col-head">
+            <span class="col-title">Functional Review</span>
+            <span class="col-count" id="count-Functional">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Functional"></div>
+        </div>
+
+        <div class="kanban-col" data-stage="Interview">
+          <div class="kanban-col-head">
+            <span class="col-title">Interview Round</span>
+            <span class="col-count" id="count-Interview">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Interview"></div>
+        </div>
+
+        <div class="kanban-col" data-stage="Offer">
+          <div class="kanban-col-head">
+            <span class="col-title">Offer Received 🎉</span>
+            <span class="col-count" id="count-Offer">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Offer"></div>
+        </div>
+
+        <div class="kanban-col" data-stage="Rejected">
+          <div class="kanban-col-head">
+            <span class="col-title">Rejection / Feedback Loop</span>
+            <span class="col-count" id="count-Rejected">0</span>
+          </div>
+          <div class="kanban-card-list" id="col-Rejected"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Companies Pool -->
+    <div class="tab-pane" id="tab-companies">
+      <div class="table-card card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Companies Database & Grading</h2>
+            <p class="card-subtitle">Suitability algorithm based on candidate profile fit and effort requirement</p>
+          </div>
+          <div class="action-row">
+            <input type="text" id="companySearchInput" class="input-sm" placeholder="Search company, city, field...">
+            <select id="companyClassFilter" class="select-sm">
+              <option value="">All Classes</option>
+              <option value="A">Class A (Top Fit)</option>
+              <option value="B">Class B (High)</option>
+              <option value="B-/C">Class B-/C (Moderate)</option>
+              <option value="C">Class C</option>
+              <option value="D">Class D</option>
+            </select>
+            <button class="btn btn-primary btn-sm" id="btnCreateCompanyModal">+ New Company</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table" id="companiesPoolTable">
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>City & Region</th>
+                <th>Class</th>
+                <th>Recommended Effort</th>
+                <th>Technical Field</th>
+                <th>Eligibility</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="companiesPoolTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Learning Curve & Feedbacks -->
+    <div class="tab-pane" id="tab-learning">
+      <div class="pane-grid-2col">
+        <!-- Feedbacks Received & Reason Classification -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Feedback Loop & Reason Analysis</h2>
+              <p class="card-subtitle">Classify HR rejections and signal continuous improvement</p>
+            </div>
+            <button class="btn btn-accent btn-sm" id="btnParseRejectionModal">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              AI Rejection Analyzer
+            </button>
+          </div>
+
+          <div class="feedback-list" id="feedbackListContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Candidate Skills & Learning Curve Matrix -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Candidate Skills & Identified Gaps</h2>
+              <p class="card-subtitle">Evolving competency matrix driven by actual employer requirements</p>
+            </div>
+            <button class="btn btn-sm btn-outline" id="btnAddSkillModal">+ Add Skill</button>
+          </div>
+
+          <div class="skills-grid" id="skillsGridContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Documents -->
+    <div class="tab-pane" id="tab-documents">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Documents Repository</h2>
+            <p class="card-subtitle">Version-controlled CVs, targeted cover letters, and university certificates</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btnAddDocumentModal">+ Add Document</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table" id="documentsTable">
+            <thead>
+              <tr>
+                <th>Document Name</th>
+                <th>Type</th>
+                <th>Version Date</th>
+                <th>Status</th>
+                <th>Notes / Specific Role</th>
+                <th>Link / File</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="documentsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 6: Search Alerts -->
+    <div class="tab-pane" id="tab-alerts">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Search Alerts & Job Portals</h2>
+            <p class="card-subtitle">Automated discovery monitors across LinkedIn, StepStone, Indeed, and Xing</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btnNewSearchAlertModal">+ New Alert</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table" id="searchAlertsTable">
+            <thead>
+              <tr>
+                <th>Filter / Alert Name</th>
+                <th>Platform</th>
+                <th>Keywords</th>
+                <th>Target Role</th>
+                <th>Status</th>
+                <th>Last Checked</th>
+                <th>Latest Results</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="searchAlertsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 7: Settings & NVIDIA AI Config -->
+    <div class="tab-pane" id="tab-settings">
+      <div class="pane-grid-2col">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">NVIDIA Open Models NIM Setup</h2>
+              <p class="card-subtitle">View backend NVIDIA status and select the active model</p>
+            </div>
+            <span class="badge badge-primary">build.nvidia.com</span>
+          </div>
+
+          <form id="aiConfigForm" class="form-grid">
+            <div class="form-group">
+              <label class="form-label">NVIDIA AI Status</label>
+              <div id="nvidiaConfigStatus" class="input-text" role="status">Checking backend configuration…</div>
+              <small class="form-hint">The API key is loaded only by the backend from the local ignored <code>.env</code> file. It cannot be entered, viewed, or changed in this browser.</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Active NVIDIA Open Model</label>
+              <select id="selectNvidiaModel" class="select-text">
+                <option value="meta/llama-3.2-11b-vision-instruct" selected>meta/llama-3.2-11b-vision-instruct (Active & Recommended)</option>
+                <option value="meta/llama-3.2-90b-vision-instruct">meta/llama-3.2-90b-vision-instruct (Large)</option>
+                <option value="deepseek-ai/deepseek-v4-flash-0731">deepseek-ai/deepseek-v4-flash-0731</option>
+                <option value="microsoft/phi-3.5-moe-instruct">microsoft/phi-3.5-moe-instruct</option>
+                <option value="meta/codellama-70b">meta/codellama-70b</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">NVIDIA NIM Base URL</label>
+              <input type="text" id="inputNvidiaBaseUrl" class="input-text" value="https://integrate.api.nvidia.com/v1" readonly>
+            </div>
+
+            <div class="action-row mt-2" style="display:flex; gap:0.75rem;">
+              <button type="submit" class="btn btn-primary" id="btnSaveAiConfig">Save AI Configuration</button>
+              <button type="button" class="btn btn-outline" id="btnTestAiConnection">
+                <span class="btn-spinner" id="testNvidiaSpinner" style="display:none;"></span>
+                Test Connection
+              </button>
+            </div>
+            <div id="aiConfigFeedback" class="feedback-msg"></div>
+
+            <div id="nvidiaConnectionStatusBox" class="ai-result-card mt-3" style="display:none;">
+              <div class="result-header">
+                <div>
+                  <span id="connStatusBadge" class="res-class-badge">Checking...</span>
+                  <span id="connLatencyBadge" class="res-conf-badge"></span>
+                </div>
+              </div>
+              <p id="connStatusDetails" class="result-rationale" style="margin-bottom:0;"></p>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Applicant Profile Context</h2>
+              <p class="card-subtitle">Used by NVIDIA models to calculate Class A-D ratings and effort recommendations</p>
+            </div>
+          </div>
+
+          <form id="candidateProfileForm" class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Candidate Name</label>
+              <input type="text" id="candProfileName" class="input-text" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Degree & Major</label>
+              <input type="text" id="candDegree" class="input-text" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">University / Institution</label>
+              <input type="text" id="candUni" class="input-text" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Role / Specialization</label>
+              <input type="text" id="candTarget" class="input-text" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Availability & Duration</label>
+              <input type="text" id="candAvailability" class="input-text">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Current Location</label>
+              <input type="text" id="candLocation" class="input-text">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Profile Notes & Focus</label>
+              <textarea id="candNotes" class="textarea-text" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+            <div id="candidateFeedback" class="feedback-msg"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal 1: AI Fit Evaluator -->
+  <div class="modal-overlay" id="modalFitEvaluator">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div class="modal-icon-wrap">⚡</div>
+          <div>
+            <h3 class="modal-title">NVIDIA Fit Evaluator & Effort Scorer</h3>
+            <p class="modal-sub">Computes Class grade (A-D) and Recommended Effort based on candidate skills alignment</p>
+          </div>
+        </div>
+        <button class="modal-close" data-close="modalFitEvaluator">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input type="text" id="aiFitCompanyName" class="input-text" placeholder="e.g. BMW Group / Celonis" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Job Title *</label>
+            <input type="text" id="aiFitJobTitle" class="input-text" placeholder="e.g. Software Engineering Intern" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Technical Field</label>
+            <input type="text" id="aiFitTechField" class="input-text" placeholder="e.g. Autonomous Driving, Cloud DevOps">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Job Requirements / Description</label>
+            <textarea id="aiFitJobDesc" class="textarea-text" rows="4" placeholder="Paste job advertisement text, prerequisites, or tech stack..."></textarea>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block mt-2" id="btnRunAiFitEvaluation">
+          <span class="btn-spinner" id="fitSpinner" style="display:none;"></span>
+          Evaluate Fit with NVIDIA Model
+        </button>
+
+        <!-- Result Box -->
+        <div class="ai-result-card mt-3" id="aiFitResultCard" style="display:none;">
+          <div class="result-header">
+            <div>
+              <span class="res-class-badge" id="resClassBadge">CLASS A</span>
+              <span class="res-score-badge" id="resScoreBadge">88% Match</span>
+              <span class="res-effort-badge" id="resEffortBadge">Effort: Deep</span>
+            </div>
+            <span class="res-conf-badge" id="resConfBadge">Confidence: High</span>
+          </div>
+          <p class="result-rationale" id="resRationale"></p>
+          
+          <div class="res-skills-row">
+            <div class="res-skills-col">
+              <h5>Matched Skills:</h5>
+              <div class="pill-list" id="resMatchedSkills"></div>
+            </div>
+            <div class="res-skills-col">
+              <h5>Missing Skills / Gaps:</h5>
+              <div class="pill-list missing" id="resMissingSkills"></div>
+            </div>
+          </div>
+
+          <div class="res-suggestions">
+            <h5>Tailoring Recommendations:</h5>
+            <ul id="resTailoringList"></ul>
+          </div>
+
+          <div class="modal-footer mt-2">
+            <button class="btn btn-outline" id="btnSaveCompanyFromFit">Save to Companies Pool</button>
+            <button class="btn btn-primary" id="btnCreateAppFromFit">Create Application</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: AI Rejection & Feedback Analyzer -->
+  <div class="modal-overlay" id="modalFeedbackAnalyzer">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div class="modal-icon-wrap">🎯</div>
+          <div>
+            <h3 class="modal-title">NVIDIA Rejection & Feedback Parser</h3>
+            <p class="modal-sub">Extract actionable skill gaps, adapt your learning curve, and generate a growth-oriented response</p>
+          </div>
+        </div>
+        <button class="modal-close" data-close="modalFeedbackAnalyzer">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Select Application *</label>
+            <select id="fbAppSelect" class="select-text" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pipeline Stage When Received</label>
+            <select id="fbStageSelect" class="select-text">
+              <option value="Application">Application</option>
+              <option value="Recruiter Review">Recruiter Review</option>
+              <option value="Functional department review">Functional Department Review</option>
+              <option value="Interview">Interview</option>
+              <option value="Final">Final</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Raw Feedback / Rejection Message</label>
+            <textarea id="fbRawText" class="textarea-text" rows="5" placeholder="Paste the exact email or feedback message received from the recruiter..."></textarea>
+          </div>
+        </div>
+
+        <button class="btn btn-accent btn-block mt-2" id="btnRunFeedbackAnalysis">
+          <span class="btn-spinner" id="fbSpinner" style="display:none;"></span>
+          Analyze Feedback with NVIDIA Model
+        </button>
+
+        <!-- Result Box -->
+        <div class="ai-result-card mt-3" id="fbResultCard" style="display:none;">
+          <div class="result-header">
+            <div>
+              <span class="res-class-badge" id="fbTypeBadge">Skill Gap</span>
+              <span class="res-effort-badge" id="fbActionableBadge">Actionable: Yes</span>
+            </div>
+          </div>
+          
+          <div class="form-group mt-2">
+            <label class="form-label">Identified Skill Gaps to Add to Learning Curve:</label>
+            <div class="pill-list" id="fbExtractedGaps"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Recommended Learning Action Plan:</label>
+            <p class="result-rationale" id="fbActionPlan"></p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Draft Polite Follow-up Email (Signals Growth Mindset to HR):</label>
+            <textarea id="fbDraftReply" class="textarea-text" rows="5"></textarea>
+          </div>
+
+          <div class="modal-footer mt-2">
+            <button class="btn btn-outline" id="btnCopyFeedbackReply">Copy Email</button>
+            <button class="btn btn-primary" id="btnSaveFeedbackAndGaps">Save Feedback & Update Learning Curve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: New Application -->
+  <div class="modal-overlay" id="modalNewApplication">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Application</h3>
+        <button class="modal-close" data-close="modalNewApplication">&times;</button>
+      </div>
+      <form id="formNewApplication" class="modal-body form-grid">
+        <div class="form-group">
+          <label class="form-label">Company *</label>
+          <select id="appCompanySelect" class="select-text" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job Title *</label>
+          <input type="text" id="appJobTitle" class="input-text" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job ID / Reference</label>
+          <input type="text" id="appJobId" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job URL</label>
+          <input type="url" id="appJobUrl" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Application Channel</label>
+          <select id="appChannel" class="select-text">
+            <option value="Direct Career Page">Direct Career Page</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="StepStone">StepStone</option>
+            <option value="Email">Email</option>
+            <option value="Referral">Referral</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Application Type</label>
+          <select id="appType" class="select-text">
+            <option value="Direct">Direct</option>
+            <option value="Initiative">Initiative Bewerbung</option>
+            <option value="Referral">Referral</option>
+            <option value="Portal">Portal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select id="appStatus" class="select-text">
+            <option value="Preparing">Preparing</option>
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Follow-up Date</label>
+          <input type="date" id="appFollowUpDate" class="input-text">
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Notes & Audit Trail</label>
+          <textarea id="appNotes" class="textarea-text" rows="2"></textarea>
+        </div>
+        <div class="modal-footer full-width">
+          <button type="button" class="btn btn-outline" data-close="modalNewApplication">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: New Company -->
+  <div class="modal-overlay" id="modalNewCompany">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Company Target</h3>
+        <button class="modal-close" data-close="modalNewCompany">&times;</button>
+      </div>
+      <form id="formNewCompany" class="modal-body form-grid">
+        <div class="form-group">
+          <label class="form-label">Company Name *</label>
+          <input type="text" id="compName" class="input-text" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input type="text" id="compCity" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Region / State</label>
+          <input type="text" id="compRegion" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Webpage</label>
+          <input type="url" id="compWebpage" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Technical Field</label>
+          <input type="text" id="compTechField" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Class Grade</label>
+          <select id="compClass" class="select-text">
+            <option value="A">Class A (Top Fit)</option>
+            <option value="B" selected>Class B (High)</option>
+            <option value="B-/C">Class B-/C (Moderate)</option>
+            <option value="C">Class C</option>
+            <option value="D">Class D</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recommended Effort</label>
+          <select id="compEffort" class="select-text">
+            <option value="Deep">Deep</option>
+            <option value="Medium+" selected>Medium+</option>
+            <option value="Medium">Medium</option>
+            <option value="Light">Light</option>
+            <option value="Standard">Standard</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Company Eligibility</label>
+          <select id="compEligibility" class="select-text">
+            <option value="yes" selected>Yes</option>
+            <option value="no">No</option>
+            <option value="unclear">Unclear</option>
+          </select>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Notes & Evaluation Rationale</label>
+          <textarea id="compNotes" class="textarea-text" rows="2"></textarea>
+        </div>
+        <div class="modal-footer full-width">
+          <button type="button" class="btn btn-outline" data-close="modalNewCompany">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Company</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Edit Sprint Goals -->
+  <div class="modal-overlay" id="modalSprint">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Daily Batch & Sprint Planner</h3>
+        <button class="modal-close" data-close="modalSprint">&times;</button>
+      </div>
+      <form id="formSprint" class="modal-body form-grid">
+        <div class="form-group">
+          <label class="form-label">Day Number</label>
+          <input type="number" id="sprintInputDayNo" class="input-text" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Applications Today</label>
+          <input type="number" id="sprintInputTargetApp" class="input-text" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Companies to Evaluate</label>
+          <input type="number" id="sprintInputTargetEval" class="input-text" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Focus Pool</label>
+          <input type="text" id="sprintInputFocus" class="input-text" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Next Pool</label>
+          <input type="text" id="sprintInputNextPool" class="input-text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sprint Status</label>
+          <select id="sprintInputStatus" class="select-text">
+            <option value="in progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="planned">Planned</option>
+            <option value="blocked">Blocked</option>
+            <option value="skipped">Skipped</option>
+          </select>
+        </div>
+        <div class="modal-footer full-width">
+          <button type="button" class="btn btn-outline" data-close="modalSprint">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Sprint</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Job URL Ingestion -->
+  <!-- Modal 7: PDF CV ingestion -->
+  <div class="modal-overlay" id="modalCvIngestion">
+    <div class="modal-card" style="max-width:820px;">
+      <div class="modal-header"><h3 class="modal-title">Upload CV PDF — Review Required</h3><button class="modal-close" data-close="modalCvIngestion">&times;</button></div>
+      <div class="modal-body form-grid">
+        <form id="formCvUpload" class="full-width">
+          <div class="form-group"><label class="form-label">PDF CV</label><input id="cvUploadFile" type="file" accept="application/pdf,.pdf" class="input-text" required><small class="form-hint">Original PDF stays local. Extracted text is sent to the configured NVIDIA model only to pre-fill this review.</small></div>
+          <div class="action-row"><button class="btn btn-primary" type="submit">Upload and Extract</button><span id="cvUploadFeedback" class="feedback-msg"></span></div>
+        </form>
+        <div id="cvProfilePanel" class="ai-result-card full-width" style="display:none;">
+          <div class="result-header"><span class="res-class-badge class-BC">CV ANALYSIS — REVIEW REQUIRED</span><span id="cvConfidence" class="form-hint"></span></div>
+          <div class="form-group mt-2"><label class="form-label">Structured CV profile</label><textarea id="cvProfileJson" class="textarea-text" rows="18"></textarea><small class="form-hint">Review and correct every field. You may add/remove skills, experience, education, languages, certifications, projects, and qualifications before confirming.</small></div>
+          <div class="modal-footer"><span id="cvConfirmFeedback" class="feedback-msg"></span><button id="btnConfirmCv" type="button" class="btn btn-primary">Confirm CV Profile</button></div>
+          <div class="modal-footer"><button id="btnReprocessCv" type="button" class="btn btn-outline" style="display:none;">Reprocess with Current Parser</button></div>
+        </div>
+        <div id="affindaComparisonPanel" class="ai-result-card full-width" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalJobIngestion">
+    <div class="modal-card" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Import Job Posting — Review Required</h3>
+        <button class="modal-close" data-close="modalJobIngestion">&times;</button>
+      </div>
+      <div class="modal-body form-grid">
+        <form id="formJobIngest" class="full-width">
+          <div class="form-group">
+            <label class="form-label">Job Posting URL</label>
+            <input type="url" id="jobIngestUrl" class="input-text" placeholder="https://company.example/careers/job" required>
+            <small class="form-hint">The page is fetched securely, cleaned, and sent to NVIDIA only to create an unconfirmed preview.</small>
+          </div>
+          <div class="action-row mt-2">
+            <button type="submit" class="btn btn-primary" id="btnExtractJob">Extract Job</button>
+            <button type="button" class="btn btn-outline" id="btnShowPasteJob">Paste Job Text</button>
+            <span class="btn-spinner" id="jobExtractSpinner" style="display:none;"></span>
+            <span id="jobIngestFeedback" class="feedback-msg"></span>
+          </div>
+        </form>
+
+        <form id="formJobPaste" class="full-width" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Paste the complete job advertisement</label>
+            <textarea id="jobPasteText" class="textarea-text" rows="12" placeholder="Full job advertisement text — no need to split it into fields."></textarea>
+            <small class="form-hint">The complete text is normalized and sent through the same review flow.</small>
+          </div>
+          <div class="action-row mt-2"><button type="submit" class="btn btn-primary">Extract Job Information</button></div>
+        </form>
+
+        <div id="jobDuplicatePanel" class="ai-result-card full-width" style="display:none;">
+          <strong>This job URL already exists.</strong>
+          <p id="jobDuplicateSummary"></p>
+          <div class="action-row">
+            <button type="button" class="btn btn-outline" id="btnOpenExistingJob">Open Existing</button>
+            <button type="button" class="btn btn-primary" id="btnCheckJobUpdate">Check for Updated Version</button>
+            <button type="button" class="btn btn-outline" id="btnCancelJobDuplicate">Cancel</button>
+          </div>
+        </div>
+
+        <div id="jobPreviewPanel" class="ai-result-card full-width" style="display:none;">
+          <div class="result-header">
+            <span class="res-class-badge class-BC">UNCONFIRMED — REVIEW REQUIRED</span>
+            <span id="jobVersionLabel" class="form-hint"></span>
+          </div>
+          <div class="form-grid mt-2">
+            <div class="form-group">
+              <label class="form-label">Company</label>
+              <input type="text" id="jobPreviewCompany" class="input-text" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Position</label>
+              <input type="text" id="jobPreviewTitle" class="input-text" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input type="text" id="jobPreviewLocation" class="input-text">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Source Platform</label>
+              <input type="text" id="jobPreviewPlatform" class="input-text">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Description</label>
+              <textarea id="jobPreviewDescription" class="textarea-text" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Required qualifications (one per line)</label>
+              <textarea id="jobPreviewRequired" class="textarea-text" rows="6"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred qualifications (one per line)</label>
+              <textarea id="jobPreviewPreferred" class="textarea-text" rows="6"></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Source URL</label>
+              <input type="url" id="jobPreviewUrl" class="input-text">
+            </div>
+          </div>
+          <div class="modal-footer full-width">
+            <span id="jobConfirmFeedback" class="feedback-msg"></span>
+            <button type="button" class="btn btn-primary" id="btnConfirmJob">Confirm & Save Job</button>
+            <button type="button" class="btn btn-outline" id="btnEditExistingJob" style="display:none;">Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
